@@ -1,0 +1,6 @@
+default:
+    security.access.method_interceptor.class:
+        default:
+            JMS\SecurityExtraBundle\Security\Authorization\Interception\MethodSecurityInterceptor
+        replace:
+            Librinfo\SecurityBundle\Interceptor\MethodSecurityInterceptor
