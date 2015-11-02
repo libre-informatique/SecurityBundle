@@ -1,0 +1,4 @@
+services:
+#    librinfo_security.example:
+#        class: Librinfo\SecurityBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
