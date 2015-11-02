@@ -2,4 +2,19 @@ parameters:
     librinfo.security:
         method_access_control:
             'FOSUserBundle:SecurityController:loginAction$': 'isAnonymous()'
-            'SonataAdminBundle:Core:dashboard$': 'hasRole("ROLE_ADMIN")'
+            'SonataAdminBundle:Core:dashboard$': 'hasRole("ROLE_USER")'
+            'Librinfo\\UIBundle\\Twig\\Extension\\AdminMenu::showAdminMenu$': 'hasRole("CRM_MANAGER")'
+        security.role_hierarchy.roles:
+            ROLE_SUPER_ADMIN:
+                - CRM_MANAGER:
+                    - CRM_CONTACT_MANAGER:
+                        - CRM_CONTACT_VIEWER:
+                            - ROLE_USER:
+                                - ROLE_SONATA_ADMIN
+                    - CRM_ORGANISM_MANAGER:
+                        - CRM_ORGANISM_VIEWER:
+                            - ROLE_USER:
+                                - ROLE_SONATA_ADMIN
+                    - CRM_ADMIN:
+                      - ROLE_USER:
+                          - ROLE_SONATA_ADMIN

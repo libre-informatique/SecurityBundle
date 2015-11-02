@@ -16,6 +16,8 @@ use Symfony\Component\Yaml\Yaml;
  */
 class LibrinfoSecurityExtension extends Extension
 {
+    private $roleHierarchy = array();
+
     /**
      * {@inheritdoc}
      */
@@ -33,7 +35,48 @@ class LibrinfoSecurityExtension extends Extension
 
         $container->setParameter(
             'security.access.method_access_control',
-            array_merge($bundleSecurityParameters,$currentSecurityParamters)
+            array_merge($bundleSecurityParameters, $currentSecurityParamters)
         );
+
+        $currentSecurityRoleHierarchy = $container->getParameter('security.role_hierarchy.roles');
+        $bundleSecurityRoleHierarchy = $container->getParameter('librinfo.security')['security.role_hierarchy.roles'];
+
+        $this->generateRoleHierarchy($bundleSecurityRoleHierarchy);
+        $bundleSecurityRoleHierarchyGenerate = $this->roleHierarchy;
+
+        $container->setParameter(
+            'security.role_hierarchy.roles',
+            array_merge($bundleSecurityRoleHierarchyGenerate, $currentSecurityRoleHierarchy)
+        );
+    }
+
+    /**
+     * generateRoleHierarchy
+     *
+     * Generate Role Hierarchy structure by yml configuration
+     *
+     * @param $params
+     * @param string $parent
+     */
+    private function generateRoleHierarchy($params, $parent = "")
+    {
+        if(is_array($params)){
+            foreach($params as $key => $child) {
+                if($parent != "" && is_array($child)) {
+                    foreach($child as $subkey => $subchild) {
+                        $this->roleHierarchy[$parent][] = $subkey;
+                        if(is_array($child)) {
+                            $this->generateRoleHierarchy($subchild, $subkey);
+                        }
+                    }
+                }
+                elseif(is_array($child)){
+                    $this->generateRoleHierarchy($child, $key);
+                }
+                elseif(!isset($this->roleHierarchy[$parent]) || !in_array($child, $this->roleHierarchy[$parent])){
+                    $this->roleHierarchy[$parent][] = $child;
+                }
+            }
+        }
     }
 }
