@@ -1,0 +1,5 @@
+parameters:
+    librinfo.security:
+        method_access_control:
+            'FOSUserBundle:SecurityController:loginAction$': 'isAnonymous()'
+            'SonataAdminBundle:Core:dashboard$': 'hasRole("ROLE_ADMIN")'
