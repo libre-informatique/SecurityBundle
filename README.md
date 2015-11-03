@@ -1,9 +1,7 @@
 # SymfonyLibrinfoSecurityBundle
 Managing security rules and access controls
 
-
 ## The "libre-informatique" bundles
-
 
 ```php
     // ...
@@ -24,64 +22,41 @@ Managing security rules and access controls
 Default security configuration is set in ```LibrinfoSecurityBundle/Resources/config/security.yml```.
 ```
 # LibrinfoSecurityBundle/Resources/config/security.yml
-parameters:
-    librinfo.security:
-        # Checking Controllers and/or Services access
-        method_access_control:
-            'FOSUserBundle:SecurityController:loginAction$': 'isAnonymous()'
-            'SonataAdminBundle:Core:dashboard$': 'hasRole("ROLE_USER")'
-            'Librinfo\\UIBundle\\Twig\\Extension\\AdminMenu::showAdminMenu$': 'hasRole("CRM_MANAGER")'
-        # Defining custom Roles hierarchy (as a tree)
-        security.role_hierarchy.roles:
-            ROLE_SUPER_ADMIN:
-                - CRM_MANAGER:
-                    - CRM_CONTACT_MANAGER:
-                        - CRM_CONTACT_VIEWER:
-                            - ROLE_USER:
-                                - ROLE_SONATA_ADMIN
-                    - CRM_ORGANISM_MANAGER:
-                        - CRM_ORGANISM_VIEWER:
-                            - ROLE_USER:
-                                - ROLE_SONATA_ADMIN
-                    - CRM_ADMIN:
-                        - ROLE_USER:
-                            - ROLE_SONATA_ADMIN
-```
-
-### Defining custom access control rules
-
-If you want to define your own access control rules to limit user access on specifics controllers and/or services,
-you can define them into your ```app/config/security.yml```, under the key :
-```
- jms_security_extra:
-    method_access_control:
-```
-
-#### Example :
-
-```
-# app/config/security.yml
-jms_security_extra:
+librinfo.security:
+    # Checking Controllers and/or Services access
     method_access_control:
         'FOSUserBundle:SecurityController:loginAction$': 'isAnonymous()'
-        'SonataAdminBundle:Core:dashboard$': 'hasRole("ROLE_ADMIN)'
-        'Librinfo\\UIBundle\\Twig\\Extension\\AdminMenu::showAdminMenu$': 'hasRole("ROLE_SUPER_ADMIN")'
+        'SonataAdminBundle:Core:dashboard$': 'hasRole("ROLE_USER")'
+        'Librinfo\\UIBundle\\Twig\\Extension\\AdminMenu::showAdminMenu$': 'hasRole("CRM_MANAGER")'
+    # Defining custom Roles hierarchy (as a tree)
+    security.role_hierarchy.roles:
+        ROLE_SUPER_ADMIN:
+            - CRM_MANAGER:
+                - CRM_CONTACT_MANAGER:
+                    - CRM_CONTACT_VIEWER:
+                        - ROLE_USER:
+                            - ROLE_SONATA_ADMIN
+                - CRM_ORGANISM_MANAGER:
+                    - CRM_ORGANISM_VIEWER:
+                        - ROLE_USER:
+                            - ROLE_SONATA_ADMIN
+                - CRM_ADMIN:
+                    - ROLE_USER:
+                        - ROLE_SONATA_ADMIN
 ```
 
-#### Notes :
+### Defining custom role hierarchy and custom access control rules
 
-* Your custom rules will override default values defined in this bundle.
-* Don't forget to clear the cache in order to see your changes applied.
+You can define your own role hierarchy and your own access control rules
+by creating new configuration file ```app/config/application_security.yml```.
 
-### Defining custom role hierarchy
-
-You can define your own role hierarchy by adding into ```app/config/parameters.yml``` this structure :
+In this file you can define your custom access control logic under ```method_access_control:``` key.
+You can define your custom role hierarchy under ```security.role_hierarchy.roles:``` key.
 
 ```
-paramters:
-    # your parameters
+librinfo.security:
     # ...
-    librinfo_security.security.role_hierarchy.roles:
+    security.role_hierarchy.roles:
         ROLE_SUPER_ADMIN:
             - TEST_ADMIN:
                 - TEST_SUB_ADMIN:
@@ -93,11 +68,30 @@ paramters:
                     - TEST_SUB_SUB_OTHER:
                         - TEST_SUB_SUB_SUB_OTHER:
                             - ROLE_USER
+    method_access_control:
+            'Librinfo\\UIBundle\\Twig\\Extension\\AdminMenu::showAdminMenu$': 'hasRole("CRM_MANAGER")'
 ```
 
 #### Notes :
 
-* Your custom rules will override default values defined in this bundle.
-* Don't forget to clear the cache in order to see your changes applied.
-* Your custom hierarchy will not be merged with bundle's default,
- it will override the whole configuration.
+* Your custom rules will be merged with default values defined in ```LibrinfoSecurityBundle``` bundle and others ones.
+* Do not forget to clear the cache in order to see your changes applied.
+* Your custom hierarchy will be merged with ```LibrinfoSecurityBundle``` bundle's defaults
+and other bundles using this configuration system.
+
+### Defining custom rules and roles within a bundle
+
+You can define custom rules into any bundle in your src directory.
+
+There are few step to achieve that :
+* create your own ```security.yml``` into ```<YOURBUNDLE DIR>/Resources/config/security.yml```
+* add your rules as described in [Defining custom role hierarchy and custom access control rules](#Defining custom role hierarchy and custom access control rules)
+* add into ```<YOUR BUNDLEDIR>/DependencyInjection/<YOURBUNDLE>Extension.php``` this code :
+```
+public function load(array $configs, ContainerBuilder $container)
+{
+    // ...
+    SecurityConfigurator::getInstance($container)->loadSecurityYml(__DIR__ . '/../Resources/config/security.yml');
+    // ...
+}
+```
