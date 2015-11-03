@@ -37,8 +37,6 @@ class LibrinfoSecurityExtension extends Extension
 
         SecurityConfigurator::getInstance($container)->loadSecurityYml(__DIR__ . '/../Resources/config/security.yml');
 
-        SecurityConfigurator::getInstance($container)->loadSecurityYml($container->getParameter('kernel.root_dir') . '/config/application_security.yml');
-
         DefaultParameters::getInstance($container)
             ->defineDefaultConfiguration(
                 $configSonataAdmin['default']
