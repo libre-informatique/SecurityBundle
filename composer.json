@@ -21,7 +21,7 @@
         }
     ],
     "autoload": {
-        "psr-4": { "Librinfo\\DecoratorBundle\\": "" }
+        "psr-4": { "Librinfo\\SecurityBundle\\": "" }
     },
     "suggest": {
         "libre-informatique/crm-bundle": "Manage contacts, organisms and more..."
