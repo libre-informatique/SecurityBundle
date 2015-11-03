@@ -38,7 +38,7 @@ class SecurityConfigurator
      *
      * @param string $path
      */
-    public function loadSecurityYml($path)
+    public function loadSecurityYml($path, $load_global = true)
     {
         if (!file_exists($path))
             return;
@@ -58,6 +58,9 @@ class SecurityConfigurator
                     'security.access.method_access_control',
                     array_merge($currentSecurityParameters, $bundleSecurityParameters)
                 );
+
+                if($load_global)
+                    $this->loadSecurityYml($this->container->getParameter('kernel.root_dir') . '/config/application_security.yml',false);
             }
 
             if (array_key_exists('security.role_hierarchy.roles', $configYml['librinfo.security']))
@@ -66,10 +69,15 @@ class SecurityConfigurator
 
                 $bundleSecurityRoleHierarchyGenerate = $this->generateRoleHierarchy($configYml['librinfo.security']['security.role_hierarchy.roles']);
 
+                $roleHierarchy = $this->filterUniqueRole(array_merge($currentSecurityRoleHierarchy, $bundleSecurityRoleHierarchyGenerate));
+
                 $this->container->setParameter(
                     'security.role_hierarchy.roles',
-                    array_merge($currentSecurityRoleHierarchy, $bundleSecurityRoleHierarchyGenerate)
+                    $roleHierarchy
                 );
+
+                if($load_global)
+                    $this->loadSecurityYml($this->container->getParameter('kernel.root_dir') . '/config/application_security.yml',false);
             }
         }
     }
@@ -112,6 +120,30 @@ class SecurityConfigurator
             }
         }
         return $this->roleHierarchy;
+    }
+
+    /**
+     * filterUniqueRole
+     *
+     * @param $array
+     *
+     * @return mixed
+     *
+     */
+    private function filterUniqueRole($array)
+    {
+        $arrayRewrite = array();
+        foreach ($array as $key => $parent)
+        {
+            foreach ($parent as $role)
+            {
+                if (!isset($arrayRewrite[$key]) || !in_array($role, $arrayRewrite[$key]))
+                {
+                    $arrayRewrite[$key][] = $role;
+                }
+            }
+        }
+        return $arrayRewrite;
     }
 
     /**
