@@ -3,6 +3,7 @@
 namespace Librinfo\SecurityBundle\DependencyInjection;
 
 use Librinfo\CoreBundle\DependencyInjection\DefaultParameters;
+use Librinfo\SecurityBundle\Configurator\SecurityConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -28,77 +29,19 @@ class LibrinfoSecurityExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
-        $loader->load('security.yml');
+        //$loader->load('security.yml');
 
         $configSonataAdmin = Yaml::parse(
             file_get_contents(__DIR__ . '/../Resources/config/bundles/jms_security_extra.yml')
         );
 
+        SecurityConfigurator::getInstance($container)->loadSecurityYml(__DIR__ . '/../Resources/config/security.yml');
+
+        SecurityConfigurator::getInstance($container)->loadSecurityYml($container->getParameter('kernel.root_dir') . '/config/application_security.yml');
+
         DefaultParameters::getInstance($container)
             ->defineDefaultConfiguration(
                 $configSonataAdmin['default']
             );
-
-        $currentSecurityParamters = $container->getParameter('security.access.method_access_control');
-        $bundleSecurityParameters = $container->getParameter('librinfo.security')['method_access_control'];
-
-        $container->setParameter(
-            'security.access.method_access_control',
-            array_merge($bundleSecurityParameters, $currentSecurityParamters)
-        );
-
-        $currentSecurityRoleHierarchy = $container->getParameter('security.role_hierarchy.roles');
-
-        $bundleSecurityRoleHierarchy = DefaultParameters::getInstance($container)
-            ->parameterExists('librinfo_security.security.role_hierarchy.roles');
-
-        if ($bundleSecurityRoleHierarchy === false)
-            $bundleSecurityRoleHierarchy = $container
-                ->getParameter('librinfo.security')['security.role_hierarchy.roles'];
-
-        $bundleSecurityRoleHierarchyGenerate = $this->generateRoleHierarchy($bundleSecurityRoleHierarchy);
-
-        $container->setParameter(
-            'security.role_hierarchy.roles',
-            array_merge($bundleSecurityRoleHierarchyGenerate, $currentSecurityRoleHierarchy)
-        );
-    }
-
-    /**
-     * generateRoleHierarchy
-     *
-     * Generate Role Hierarchy structure by yml configuration
-     *
-     * @param        $params
-     * @param string $parent
-     */
-    private function generateRoleHierarchy($params, $parent = "")
-    {
-        if (is_array($params))
-        {
-            foreach ($params as $key => $child)
-            {
-                if ($parent != "" && is_array($child))
-                {
-                    foreach ($child as $subkey => $subchild)
-                    {
-                        $this->roleHierarchy[$parent][] = $subkey;
-                        if (is_array($child))
-                        {
-                            $this->generateRoleHierarchy($subchild, $subkey);
-                        }
-                    }
-                }
-                elseif (is_array($child))
-                {
-                    $this->generateRoleHierarchy($child, $key);
-                }
-                elseif (!isset($this->roleHierarchy[$parent]) || !in_array($child, $this->roleHierarchy[$parent]))
-                {
-                    $this->roleHierarchy[$parent][] = $child;
-                }
-            }
-        }
-        return $this->roleHierarchy;
     }
 }
