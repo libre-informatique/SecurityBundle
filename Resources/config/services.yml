@@ -1,4 +1,11 @@
 services:
-#    librinfo_security.example:
-#        class: Librinfo\SecurityBundle\Example
-#        arguments: [@service_id, "plain_value", %parameter%]
+    librinfo.security_bundle.global.voter:
+        class:      Librinfo\SecurityBundle\Voters\GlobalVoter
+        public:     false
+        tags:
+            - { name: security.voter }
+
+    librinfo.security_bundle.sonata.voter:
+        class:      Librinfo\SecurityBundle\Voters\SonataCustomVoter
+        public:     false
+        arguments: [@security.context,['ROLE_SUPER_ADMIN'] ]
