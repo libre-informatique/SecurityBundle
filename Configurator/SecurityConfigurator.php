@@ -47,9 +47,11 @@ class SecurityConfigurator
             file_get_contents($path)
         );
 
-        if (array_key_exists('librinfo.security', $configYml))
+        $env = ($this->container->getParameter('kernel.environment') == 'test') ? '_test':'';
+
+        if ( is_array($configYml) && array_key_exists('librinfo.security', $configYml))
         {
-            if (array_key_exists('method_access_control', $configYml['librinfo.security']))
+            if (is_array($configYml['librinfo.security']) && array_key_exists('method_access_control', $configYml['librinfo.security']))
             {
                 $currentSecurityParameters = $this->container->getParameter('security.access.method_access_control');
                 $bundleSecurityParameters = $configYml['librinfo.security']['method_access_control'];
@@ -60,10 +62,10 @@ class SecurityConfigurator
                 );
 
                 if($load_global)
-                    $this->loadSecurityYml($this->container->getParameter('kernel.root_dir') . '/config/application_security.yml',false);
+                    $this->loadSecurityYml($this->container->getParameter('kernel.root_dir') . '/config/application_security'.$env.'.yml',false);
             }
 
-            if (array_key_exists('security.role_hierarchy.roles', $configYml['librinfo.security']))
+            if (is_array($configYml['librinfo.security']) && array_key_exists('security.role_hierarchy.roles', $configYml['librinfo.security']))
             {
                 $currentSecurityRoleHierarchy = $this->container->getParameter('security.role_hierarchy.roles');
 
@@ -77,7 +79,7 @@ class SecurityConfigurator
                 );
 
                 if($load_global)
-                    $this->loadSecurityYml($this->container->getParameter('kernel.root_dir') . '/config/application_security.yml',false);
+                    $this->loadSecurityYml($this->container->getParameter('kernel.root_dir') . '/config/application_security'.$env.'.yml',false);
             }
         }
     }

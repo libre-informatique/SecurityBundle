@@ -31,11 +31,17 @@ class LibrinfoSecurityExtension extends Extension
         $loader->load('services.yml');
         //$loader->load('security.yml');
 
+        if($container->getParameter("kernel.environment") == "test")
+        {
+            $loader->load('datafixtures.yml');
+        }
+
         $configSonataAdmin = Yaml::parse(
             file_get_contents(__DIR__ . '/../Resources/config/bundles/jms_security_extra.yml')
         );
 
-        SecurityConfigurator::getInstance($container)->loadSecurityYml(__DIR__ . '/../Resources/config/security.yml');
+        $env = ($container->getParameter('kernel.environment') == 'test') ? '_test':'';
+        SecurityConfigurator::getInstance($container)->loadSecurityYml(__DIR__ . '/../Resources/config/security'.$env.'.yml');
 
         DefaultParameters::getInstance($container)
             ->defineDefaultConfiguration(

@@ -1,0 +1,10 @@
+librinfo.security:
+    # Checking Controllers and/or Services access
+    method_access_control:
+        'FOSUserBundle:SecurityController:loginAction$': 'isAnonymous()'
+        'SonataAdminBundle:Core:dashboard$': 'hasRole("ROLE_USER")'
+        'Librinfo\\UIBundle\\Twig\\Extension\\AdminMenu::showAdminMenu$': 'hasRole("ROLE_GLOBAL_TEST")'
+    # Defining custom Roles hierarchy (as a tree)
+    security.role_hierarchy.roles:
+        ROLE_SUPER_ADMIN:
+            - ROLE_GLOBAL_TEST

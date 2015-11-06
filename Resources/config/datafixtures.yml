@@ -1,0 +1,7 @@
+parameters:
+    librinfo.securitybundle.datafixtures:
+        user:
+            username: 'nicolasSecurity'
+            password: 'testSecurity'
+            email: 'testSecurity@test.fr'
+            role: 'ROLE_GLOBAL_TEST'
