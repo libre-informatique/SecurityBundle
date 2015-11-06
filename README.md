@@ -31,24 +31,24 @@ librinfo.security:
     # Defining custom Roles hierarchy (as a tree)
     security.role_hierarchy.roles:
         ROLE_SUPER_ADMIN:
-            - CRM_MANAGER:
-                - CRM_CONTACT_MANAGER:
-                    - CRM_CONTACT_VIEWER:
-                        - ROLE_USER:
-                            - ROLE_SONATA_ADMIN
-                - CRM_ORGANISM_MANAGER:
-                    - CRM_ORGANISM_VIEWER:
-                        - ROLE_USER:
-                            - ROLE_SONATA_ADMIN
-                - CRM_ADMIN:
-                    - ROLE_USER:
-                        - ROLE_SONATA_ADMIN
+            - ROLE_CRM_MANAGER:
+                - ROLE_CRM_CONTACT_MANAGER:
+                    - ROLE_CRM_CONTACT_VIEWER:
+                        - ROLE_USER
+                - ROLE_CRM_ORGANISM_MANAGER:
+                    - ROLE_CRM_ORGANISM_VIEWER:
+                        - ROLE_USER
+                - ROLE_CRM_ADMIN:
+                    - ROLE_USER
 ```
 
 ### Defining custom role hierarchy and custom access control rules
 
 You can define your own role hierarchy and your own access control rules
 by creating new configuration file ```app/config/application_security.yml```.
+
+It's very important to prefix all your roles with « ROLE_ ». It's because Symfony's RoleVoter use this prefix by default.
+* see [RoleVoter::supportsAttribute](https://github.com/symfony/symfony/blob/2.8/src/Symfony/Component/Security/Core/Authorization/Voter/RoleVoter.php)
 
 In this file you can define your custom access control logic under ```method_access_control:``` key.
 You can define your custom role hierarchy under ```security.role_hierarchy.roles:``` key.
@@ -58,18 +58,18 @@ librinfo.security:
     # ...
     security.role_hierarchy.roles:
         ROLE_SUPER_ADMIN:
-            - TEST_ADMIN:
-                - TEST_SUB_ADMIN:
+            - ROLE_TEST_ADMIN:
+                - ROLE_TEST_SUB_ADMIN:
                     - ROLE_USER
-                - TEST_SUB_USER:
-                    - TEST_SUB_SUB_USER:
+                - ROLE_TEST_SUB_USER:
+                    - ROLE_TEST_SUB_SUB_USER:
                         - ROLE_USER
-                - TEST_SUB_OTHER:
-                    - TEST_SUB_SUB_OTHER:
-                        - TEST_SUB_SUB_SUB_OTHER:
+                - ROLE_TEST_SUB_OTHER:
+                    - ROLE_TEST_SUB_SUB_OTHER:
+                        - ROLE_TEST_SUB_SUB_SUB_OTHER:
                             - ROLE_USER
     method_access_control:
-            'Librinfo\\UIBundle\\Twig\\Extension\\AdminMenu::showAdminMenu$': 'hasRole("CRM_MANAGER")'
+            'Librinfo\\UIBundle\\Twig\\Extension\\AdminMenu::showAdminMenu$': 'hasRole("ROLE_CRM_MANAGER")'
 ```
 
 #### Notes :
