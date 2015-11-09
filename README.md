@@ -27,7 +27,7 @@ librinfo.security:
     method_access_control:
         'FOSUserBundle:SecurityController:loginAction$': 'isAnonymous()'
         'SonataAdminBundle:Core:dashboard$': 'hasRole("ROLE_USER")'
-        'Librinfo\\UIBundle\\Twig\\Extension\\AdminMenu::showAdminMenu$': 'hasRole("CRM_MANAGER")'
+        'Librinfo\\UIBundle\\Twig\\Extension\\AdminMenu::showAdminMenu$': 'hasRole("ROLE_CRM_MANAGER")'
     # Defining custom Roles hierarchy (as a tree)
     security.role_hierarchy.roles:
         ROLE_SUPER_ADMIN:
