@@ -17,6 +17,51 @@ Managing security rules and access controls
 
 ## Configuration
 
+### General configuration
+
+You should have this kind of configuration in ```app/config.security.yml``` :
+
+```
+# app/config/security.yml
+
+security:
+    encoders:
+        FOS\UserBundle\Model\UserInterface: bcrypt
+
+    providers:
+        fos_userbundle:
+            id: fos_user.user_provider.username_email
+
+    firewalls:
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            pattern: ^/
+            form_login:
+                provider: fos_userbundle
+                csrf_provider: security.csrf.token_manager # Use form.csrf_provider instead for Symfony <2.4
+
+            logout:       true
+            anonymous:    ~
+
+    access_control:
+        - { path: ^/(css|images|js), role: IS_AUTHENTICATED_ANONYMOUSLY } # allow assets for anonymous users
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+
+jms_security_extra:
+    secure_all_services: false
+    enable_iddqd_attribute: false
+    expressions: true
+    voters:
+        disable_authenticated: false
+        disable_role:          false
+        disable_acl:           true
+    method_access_control: {}
+```
+
 ### Default configuration
 
 Default security configuration is set in ```LibrinfoSecurityBundle/Resources/config/security.yml```.
