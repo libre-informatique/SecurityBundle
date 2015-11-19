@@ -8,7 +8,12 @@ Managing security rules and access controls
     public function registerBundles()
     {
         $bundles = array(
-            // ...
+            // before Librinfo bundles
+            new JMS\AopBundle\JMSAopBundle(),
+            new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
+            new JMS\DiExtraBundle\JMSDiExtraBundle($this),
+            
+            // After...
             new Librinfo\SecurityBundle\LibrinfoSecurityBundle(),
             // ...
         );
@@ -60,6 +65,11 @@ jms_security_extra:
         disable_role:          false
         disable_acl:           true
     method_access_control: {}
+    
+    # Allows you to specify access control rules for specific methods, such
+    # as controller actions
+    method_access_control:
+        'FOSUserBundle:SecurityController:logoutAction$': 'isAuthenticated()'
 ```
 
 ### Default configuration
