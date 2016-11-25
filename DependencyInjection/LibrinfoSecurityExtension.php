@@ -2,7 +2,7 @@
 
 namespace Librinfo\SecurityBundle\DependencyInjection;
 
-use Librinfo\CoreBundle\DependencyInjection\DefaultParameters;
+use Blast\CoreBundle\DependencyInjection\DefaultParameters;
 use Librinfo\SecurityBundle\Configurator\SecurityConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
