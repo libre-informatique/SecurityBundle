@@ -25,7 +25,7 @@ class SecurityControllerTest extends WebTestCase
         $this->init();
 
         /** @var \Librinfo\UserBundle\Entity\User $user */
-        $user = $this->client->getContainer()->get('librinfo_core.services.authenticate')->authencicateUser($this->datafixtures['user']['username']);
+        $user = $this->client->getContainer()->get('blast_core.services.authenticate')->authencicateUser($this->datafixtures['user']['username']);
 
         $this->assertTrue($user->hasRole($this->datafixtures['user']['role']));
 
