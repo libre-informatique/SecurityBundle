@@ -8,4 +8,4 @@ services:
     librinfo.security_bundle.sonata.voter:
         class:      Librinfo\SecurityBundle\Voters\SonataCustomVoter
         public:     false
-        arguments: ['@security.authorization_checker',['ROLE_SUPER_ADMIN'] ]
+        arguments: ['@security.context',['ROLE_SUPER_ADMIN'] ]

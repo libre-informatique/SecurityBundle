@@ -3,8 +3,8 @@
     "type": "symfony-bundle",
     "description": "Managing security rules and access controls",
     "require": {
-        "php": ">=5.3.0",
-        "symfony/symfony": "2.8.*",
+        "php": "^5.6|^7.0",
+        "symfony/symfony": "3.2.*",
         "jms/security-extra-bundle": "dev-master"
     },
     "license":  "GNU-GPL",
