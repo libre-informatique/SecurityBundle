@@ -7,13 +7,18 @@
         "symfony/symfony": "3.2.*",
         "jms/security-extra-bundle": "dev-master"
     },
-    "license":  "GNU-GPL",
-    "keywords": ["e-venement", "libio", "sonata", "symfony"],
+    "license": "GNU-GPL",
+    "keywords": [
+        "e-venement",
+        "libio",
+        "sonata",
+        "symfony"
+    ],
     "homepage": "https://github.com/libre-informatique/SymfonyLibrinfoSecurityBundle",
     "authors": [
         {
-           "name": "Baptiste SIMON",
-           "email": "baptiste.simon@libre-informatique.fr"
+            "name": "Baptiste SIMON",
+            "email": "baptiste.simon@libre-informatique.fr"
         },
         {
             "name": "Libre Informatique",
@@ -21,7 +26,10 @@
         }
     ],
     "autoload": {
-        "psr-4": { "Librinfo\\SecurityBundle\\": "" }
+        "psr-4": {
+            "Librinfo\\SecurityBundle\\": "src/",
+            "Librinfo\\SecurityBundle\\Tests\\": "tests/"
+        }
     },
     "suggest": {
         "libre-informatique/crm-bundle": "Manage contacts, organisms and more..."
