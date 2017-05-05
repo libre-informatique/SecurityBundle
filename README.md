@@ -1,3 +1,9 @@
+**This project has been abandoned and is no longer maintained.**
+you should use https://github.com/libre-informatique/SonataSyliusUserBundle
+
+
+
+
 # SymfonyLibrinfoSecurityBundle
 Managing security rules and access controls
 
